@@ -32,7 +32,7 @@ if meal_planner:
     version = meal_planner.VERSION
 
     requirements = [
-        line.strip() for line in open("./requirements.txt")
+        line.strip() for line in open("./planner/requirements.txt")
         ]
 
     setup(
@@ -48,4 +48,4 @@ if meal_planner:
         install_requires = requirements,
     )
 else:
-    print "ERROR: During Setup"
+    print "ERROR: Problem during setup meal_planner package not found."
