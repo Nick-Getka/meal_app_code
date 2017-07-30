@@ -27,6 +27,7 @@ import numpy as np
 
 from argparse_ import *
 from recipe import *
+from reranker import *
 
 
 __all__ = [
@@ -35,23 +36,13 @@ __all__ = [
 
 class MealPlanner(object) :
     def __init__(self) :
-        args = ArgParser().get_args(cache=False)
-        self._meal_num = args.meal_count
-        self._read_type = args.read_type
-        self._data_path = args.data_path
+        self._args = ArgParser().get_args(cache=False)
+        self._meal_num = self._args.meal_count
+        self._read_type = self._args.read_type
+        self._data_path = self._args.data_path
         self._recipeArr = []
+        self._reRanker = Reranker()
         return None
-
-    #Innerclass used to keep ranking easy
-    class RankRecipe(object) :
-        def __init__(self, rec) :
-            self._rank = 1
-            self._recipe = rec if type(rec) == 'Recipe' else Recipe(rec)
-            return None
-        def get_recipe(self):
-            return self._recipe
-        def get_ing(self) :
-            return self.recipe.get_ingList
 
     #Getters and Setters
     def get_meal_num(self) :
@@ -72,22 +63,39 @@ class MealPlanner(object) :
     def load_data(self) :
         if len(self._recipeArr) == 0:
             self.load_csv() if self._read_type == "csv"  else self.load_db()
+        self._reRanker.set_recArr(self._recipeArr)
         return None
     def load_csv(self) :
         with open(self._data_path, 'rb') as csvfile :
             reader = csv.reader(csvfile, delimiter=',')
             for row in reader :
-                self._recipeArr.append(self.RankRecipe(row))
+                self._recipeArr.append(Recipe(row))
         return None
     def load_db(self) :
         print "Loading data from database not implemented yet"
         return None
 
     #Meal Selection Methods
-    def random_selection(self) :
-        not_master = np.asarray(self._recipeArr)
-        choice = random.sample(range(len(not_master)), self._meal_num)
-        for z in choice :
-            print not_master[z].get_recipe()
+    def _random_selection(self, recArr) :
+        return random.sample(range(len(recArr)),1)[0]
 
-    #VSM Reranking next
+    def _weighted_selection(self, recArr) :
+        weight_sum = 0
+        for rec in recArr :
+            weight_sum += rec.get_weight()
+        choice = random.sample(range(weight_sum), 1)[0]
+        cur_index = 0
+        while choice > recArr[cur_index].get_weight() :
+            choice -= recArr[cur_index].get_weight()
+            cur_index += 1
+        return cur_index
+
+    def select(self) :
+        not_master = np.asarray(self._recipeArr)
+        selected = []
+        for x in range(self._meal_num) :
+            self._reRanker.rerank(selected)
+            new_sel = self._weighted_selection(not_master)
+            selected.append(not_master[new_sel])
+            not_master = np.delete(not_master, new_sel)
+        return selected

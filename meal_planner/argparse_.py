@@ -42,7 +42,7 @@ class ArgParser(object):
         self._argparser.add_argument(
             "-m", "--meal",
             type = int,
-            choices = range(1,7,2),
+            choices = range(1,16,2),
             required = True,
             dest = "meal_count",
             help = 'Enter number of meals to plan (1, 3, 5, or 7)'
@@ -60,6 +60,14 @@ class ArgParser(object):
             dest = "data_path",
             help = "If reading from a .csv file, please include the path to the file."
             )
+        self._argparser.add_argument(
+            "-v","--vsm",
+            action = "store_true",
+            dest = "vsm",
+            help = "By adding this argument and true sets the meal planner to"\
+                    " use the vsm to rerank the recipies."
+            )
+        return None
 
     #parse the command line arguments
     def get_args(self, cache=True):

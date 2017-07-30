@@ -21,12 +21,14 @@
 # THE SOFTWARE.
 
 import meal_planner as mp
+from meal_planner.recipe import *
 
 def main():
     planner = mp.planner.MealPlanner()
     planner.load_data()
-    planner.random_selection()
-
+    final = planner.select()
+    for s in final :
+        print str(s)
 
 
 if __name__ == "__main__":

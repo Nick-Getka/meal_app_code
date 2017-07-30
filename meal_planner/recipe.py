@@ -37,17 +37,17 @@ class Ingredient(object) :
 #Basic storage unit for the recipes
 class Recipe(object) :
     def __init__(self) :
+        self._weight = 1
         self._name = None
         self._ingList = []
-        return None
-    def __init__(self, n, i) :
-        self._name = None
-        self._ingList = []
-        self.read(n,i)
+        self._fullIngList = []
         return None
     def __init__(self, csvfile) :
+        self._weight = 1
+        self._name = None
         self._name = None
         self._ingList = []
+        self._fullIngList = []
         self.read_csvrow(csvfile)
         return None
     def __str__(self) :
@@ -61,18 +61,21 @@ class Recipe(object) :
         return ret
 
     #Getters and Setters
-    def get_ingList() :
+    def get_weight(self) :
+        return self._weight
+    def set_weight(self, x) :
+        self._weight = x
+    def get_ingList(self) :
         return self._ingList if self._name != None else None
-    def get_name() :
+    def get_fullIngList(self) :
+        return self._fullIngList if self._name != None else None
+    def get_name(self) :
         return self._name
 
     #Reads in data
-    def read(self, name, ingList) :
-        self._name = name
-        self._ingList = ingList
-        return None
     def read_csvrow(self, row) :
         self._name = row[0]
         for x in range(1, len(row)-2, 3) :
-            self._ingList.append(Ingredient(row[x],row[x+1],row[x+2]))
+            self._ingList.append(row[x+2])
+            self._fullIngList.append(Ingredient(row[x],row[x+1],row[x+2]))
         return None
