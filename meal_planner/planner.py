@@ -24,6 +24,7 @@ import csv
 import random
 import pprint as pp
 import numpy as np
+import pprint as pp
 
 from argparse_ import *
 from recipe import *
@@ -41,7 +42,7 @@ class MealPlanner(object) :
         self._read_type = self._args.read_type
         self._data_path = self._args.data_path
         self._recipeArr = []
-        self._reRanker = Reranker()
+        self._reRanker = Reranker(self._args)
         return None
 
     #Getters and Setters
@@ -83,6 +84,8 @@ class MealPlanner(object) :
         weight_sum = 0
         for rec in recArr :
             weight_sum += rec.get_weight()
+        print weight_sum
+
         choice = random.sample(range(weight_sum), 1)[0]
         cur_index = 0
         while choice > recArr[cur_index].get_weight() :
@@ -94,7 +97,7 @@ class MealPlanner(object) :
         not_master = np.asarray(self._recipeArr)
         selected = []
         for x in range(self._meal_num) :
-            self._reRanker.rerank(selected)
+            not_master = self._reRanker.rerank(selected)
             new_sel = self._weighted_selection(not_master)
             selected.append(not_master[new_sel])
             not_master = np.delete(not_master, new_sel)

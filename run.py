@@ -27,8 +27,7 @@ def main():
     planner = mp.planner.MealPlanner()
     planner.load_data()
     final = planner.select()
-    for s in final :
-        print str(s)
+
 
 
 if __name__ == "__main__":
