@@ -19,16 +19,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+import pprint as pp
 
 import meal_planner as mp
 from meal_planner.recipe import *
 
 def main():
-    planner = mp.planner.MealPlanner()
-    planner.load_data()
-    final = planner.select()
-
-
+    planner = mp.Planner()
+    for p in planner.select(5):
+        print str(p)
 
 if __name__ == "__main__":
     main()

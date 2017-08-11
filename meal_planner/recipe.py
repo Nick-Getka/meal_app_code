@@ -27,55 +27,32 @@ __all__ = [
 
 #Basic storage unit for the ingredients
 class Ingredient(object) :
-    def __init__(self, amt, measure, name) :
+    def __init__(self, name, measure, amount, db_id) :
         self.name = name
-        self.amt = amt
         self.measure = measure
+        self.amount = amount
+        self.db_id = db_id
     def __str__(self) :
-        return str(self.amt)+" "+self.measure+" "+self.name
+        return str(self.amount)+" "+str(self.measure)+" "+str(self.name)
+
 
 #Basic storage unit for the recipes
 class Recipe(object) :
-    def __init__(self) :
-        self._weight = 1
-        self._name = None
-        self._ingList = []
-        self._fullIngList = []
-        return None
-    def __init__(self, csvfile) :
-        self._weight = 1
-        self._name = None
-        self._name = None
-        self._ingList = []
-        self._fullIngList = []
-        self.read_csvrow(csvfile)
+    def __init__(self, name, ingredientList, db_id) :
+        self.weight = 1.0
+        self.name = name
+        self.ingredientList = ingredientList
+        self.db_id = db_id
         return None
     def __str__(self) :
         ret = ""
-        if self._name is not None :
-            ret += "Name: "+str(self._name)+"\nIngredient List: "
-            for y in range(0, len(self._ingList)) :
-                ret += str(self._ingList[y]) + "\n"
-        else :
-            ret = "Empty"
+        ret += "Name: "+str(self.name)+"\nIngredient List: "
+        for y in range(0, len(self.ingredientList)) :
+            ret += str(self.ingredientList[y]) + "\n"
         return ret
 
-    #Getters and Setters
-    def get_weight(self) :
-        return self._weight
-    def set_weight(self, x) :
-        self._weight = x
-    def get_ingList(self) :
-        return self._ingList if self._name != None else None
-    def get_fullIngList(self) :
-        return self._fullIngList if self._name != None else None
-    def get_name(self) :
-        return self._name
-
-    #Reads in data
-    def read_csvrow(self, row) :
-        self._name = row[0]
-        for x in range(1, len(row)-2, 3) :
-            self._ingList.append(row[x+2])
-            self._fullIngList.append(Ingredient(row[x],row[x+1],row[x+2]))
-        return None
+    def getIngredientNames(self) :
+        names = []
+        for r in self.ingredientList :
+            names.append(r.name)
+        return names
